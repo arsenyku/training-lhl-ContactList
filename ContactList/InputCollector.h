@@ -7,9 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Contact.h"
+#import "ContactList.h"
 
 @interface InputCollector : NSObject
 
 -(NSString *)inputForPrompt:(NSString *)promptString;
+
+-(Contact*) promptForNewContactForList:(ContactList *)list;
 
 @end

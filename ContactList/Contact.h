@@ -16,4 +16,7 @@
 
 -(void) show;
 
+-(NSDictionary*)propertyList;
+-(instancetype)initWithPropertyList:(NSDictionary*)propertyList;
+
 @end

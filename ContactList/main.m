@@ -11,52 +11,6 @@
 #import "Contact.h"
 #import "ContactList.h"
 
-NSDictionary* promptForPhoneNumber(InputCollector *inputCollector){
-    NSString *phoneLabel = [inputCollector inputForPrompt:@"Enter the label of the phone number:"];
-    
-    if ( [phoneLabel isEqualToString:@""] ){
-        return nil;
-    }
-    
-    NSString *phoneNumber = [inputCollector inputForPrompt:@"Enter the phone number:"];
-    
-    NSDictionary *newPhone = @{ @"label":phoneLabel, @"number":phoneNumber };
-
-    return newPhone;
-}
-
-
-Contact* promptForNewContact(InputCollector *inputCollector, ContactList *list){
-    Contact* newContact = [[Contact alloc]init];
-    
-    newContact.email = [inputCollector inputForPrompt:@"Enter the Contact's email:"];
-    
-    if ( [list hasEmail:newContact.email] ){
-        NSLog(@"That contact already exists!");
-        return nil;
-    }
-    
-    newContact.name = [inputCollector inputForPrompt:@"Enter the Contact's name:"];
-    
-    printf("\nEnter phone numbers for the contact.\n");
-    printf("When you are done, enter a blank label.\n");
-    
-    while (YES) {
-    
-        printf("\n");
-        NSDictionary *newPhone = promptForPhoneNumber(inputCollector);
-        
-        if (newPhone == nil)
-            break;  // Stop prompting for phone numbers
-
-        [newContact.phoneNumbers addObject:newPhone];
-        
-    }
-    
-    return newContact;
-}
-
-
 
 NSNumber* stringToNumber(NSString *inputString){
     
@@ -93,10 +47,12 @@ int main(int argc, const char * argv[]) {
 				        "list - List all contacts\n"
         				"show <id> - Show the details for contact <id>\n"
         				"find <partial name or email> - Show the details for all contacts that match\n"
+				        "reset - immediately deletes all contacts, including those previously stored\n"
 				       	"quit - Exit Application\n"
                        	"> ";
         
         ContactList *contacts = [[ContactList alloc] init];
+        [contacts readFromCache];
         
         BOOL stayInInputLoop = YES;
         
@@ -104,6 +60,7 @@ int main(int argc, const char * argv[]) {
         NSString* const ListCommand = @"list";
         NSString* const ShowCommand = @"show";
         NSString* const FindCommand = @"find";
+        NSString* const ResetCommand = @"reset";
         NSString* const QuitCommand = @"quit";
         
         while (stayInInputLoop){
@@ -114,7 +71,7 @@ int main(int argc, const char * argv[]) {
             if ([input isEqualToString:@""]){
             
             } else if ([input hasPrefix:NewCommand]) {
-                Contact* newContact = promptForNewContact(inputCollector, contacts);
+                Contact* newContact = [inputCollector promptForNewContactForList:contacts];
                 if (newContact != nil){
                     [contacts addContact:newContact];
                 }
@@ -123,7 +80,6 @@ int main(int argc, const char * argv[]) {
                 [contacts listContacts];
                 
             } else if ([input hasPrefix:ShowCommand]) {
-                
                 [contacts showContactWithId:getIdFromInput(input)];
             
             } else if ([input hasPrefix:FindCommand]) {
@@ -133,8 +89,13 @@ int main(int argc, const char * argv[]) {
                 
                 [contacts findContactsByStringMatch:stringToMatch];
 
+            } else if ([input hasPrefix:ResetCommand]) {
+                contacts = [[ContactList alloc] init];
+                [contacts saveToCache];
+                
             } else if ([input hasPrefix:QuitCommand]) {
                 NSLog(@"Exiting.");
+                [contacts saveToCache];
                 stayInInputLoop = NO;
                 break;
 

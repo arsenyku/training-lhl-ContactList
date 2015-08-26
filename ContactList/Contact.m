@@ -18,6 +18,19 @@
     return self;
 }
 
+-(instancetype)initWithPropertyList:(NSDictionary*)propertyList{
+    self = [super init];
+    
+    _name = propertyList[ @"name" ];
+    _email = propertyList[ @"email" ];
+    _phoneNumbers = propertyList[ @"phoneNumbers" ];
+    
+    return self;
+}
+
+
+
+
 -(void) show{
     char output[255];
     printf("\n");
@@ -37,12 +50,22 @@
             NSString *phoneLabel = [phoneDetails objectForKey:@"label"];
             NSString *phoneNumber = [phoneDetails objectForKey:@"number"];
             
+            char output[255];
             [[NSString stringWithFormat:@"    %@:%@\n", phoneLabel, phoneNumber] getCString:output maxLength:255 encoding:NSUTF8StringEncoding];
             printf("%s", output);
     	}
     }
         
     NSLog(@"");
+}
+
+-(NSDictionary*)propertyList{
+    NSDictionary* me = @{
+        	@"name":self.name,
+        	@"email":self.email,
+        	@"phoneNumbers":[self phoneNumbers]
+        };
+    return me;
 }
 
 

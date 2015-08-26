@@ -28,13 +28,16 @@
 
 -(void)listContacts{
     if ([self.contacts count] < 1){
-        NSLog(@"Your contacts list is currently empty");
+        printf("Your contacts list is currently empty.");
         return;
     }
     
     for(int i = 0; i<[self.contacts count]; i++){
         Contact *contact = self.contacts[i];
-        NSLog(@"%d: %@ (%@)", i, contact.name, contact.email);
+        char output[255];
+        [[NSString stringWithFormat:@"%d: %@ (%@)", i, contact.name, contact.email]
+               getCString:output maxLength:sizeof(output) encoding:NSUTF8StringEncoding];
+        printf("%s",output);
     }
 }
 
@@ -90,6 +93,45 @@
     }
     
     return NO;
+}
+
+
+
+
+-(NSString*) cacheFilePath{
+	
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    
+    NSString *currentPath = [fileManager currentDirectoryPath];
+
+    //Then write the file
+    NSString *filePath = [currentPath stringByAppendingString:@"/Contacts.plist"];
+
+    return filePath;
+}
+
+-(void) saveToCache{
+    NSMutableArray *contactsAsPropertyList = [[NSMutableArray alloc] init];
+    for (Contact* contact in self.contacts) {
+		[contactsAsPropertyList addObject:[contact propertyList]];
+    }
+    BOOL saveSuccess = [contactsAsPropertyList writeToFile:[self cacheFilePath] atomically:YES];
+    
+    if (!saveSuccess){
+	    NSLog(@"saveToCache: Failed to save to %@ using data %@", [self cacheFilePath], contactsAsPropertyList);
+    }
+}
+
+-(void)readFromCache{
+
+    NSArray *cachedData = [NSArray arrayWithContentsOfFile:[self cacheFilePath]];
+    
+    for (NSDictionary* contactData in cachedData) {
+        [self.contacts addObject:[[Contact alloc] initWithPropertyList:contactData]];
+    }
+    
+    
+    //NSLog(@"Loaded %lu contacts from storage.", (unsigned long)[self.contacts count]);
 }
 
 

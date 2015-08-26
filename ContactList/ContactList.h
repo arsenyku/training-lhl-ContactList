@@ -17,4 +17,7 @@
 -(void)findContactsByStringMatch:(NSString*)stringToMatch;
 -(BOOL)hasEmail:(NSString*)email;
 
+-(void)saveToCache;
+-(void)readFromCache;
+
 @end
