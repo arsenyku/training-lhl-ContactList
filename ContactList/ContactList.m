@@ -58,11 +58,38 @@
 }
 
 -(void)findContactsByStringMatch:(NSString*)stringToMatch{
+    int matches = 0;
     for (Contact *contact in self.contacts) {
         
-        if (stringToMatch init)
+        BOOL matchFound = ( [contact.name rangeOfString:stringToMatch].length > 0 ) ||
+                          ( [contact.email rangeOfString:stringToMatch].length > 0 );
+
+        if (matchFound){
+        
+            matches++;
+            printf("\n");
+            [contact show];
+        
+        }
         
     }
+    
+    char output[255];
+    printf("\n");
+    [[NSString stringWithFormat:@"Found %d matches\n", matches] getCString:output maxLength:255 encoding:NSUTF8StringEncoding];
+    printf("%s", output);
+}
+
+-(BOOL)hasEmail:(NSString*)email{
+    for (Contact *contact in self.contacts) {
+        
+        if ([contact.email isEqualToString:email]){
+            return YES;
+        }
+    
+    }
+    
+    return NO;
 }
 
 

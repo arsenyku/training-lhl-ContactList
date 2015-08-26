@@ -15,5 +15,6 @@
 -(void)listContacts;
 -(void)showContactWithId:(NSNumber*)idNumber;
 -(void)findContactsByStringMatch:(NSString*)stringToMatch;
+-(BOOL)hasEmail:(NSString*)email;
 
 @end

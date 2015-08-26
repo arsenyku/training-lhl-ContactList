@@ -14,13 +14,34 @@
     self = [super init];
     _name = @"";
     _email = @"";
+    _phoneNumbers = [[NSMutableArray alloc] init];
     return self;
 }
 
 -(void) show{
-    NSLog(@"");
-    NSLog(@"Name: %@", self.name);
-    NSLog(@"Email: %@", self.email);
+    char output[255];
+    printf("\n");
+    
+    [[NSString stringWithFormat:@"Name: %@\n", self.name] getCString:output maxLength:255 encoding:NSUTF8StringEncoding] ;
+    printf("%s", output);
+    
+    [[NSString stringWithFormat:@"Email: %@\n", self.email] getCString:output maxLength:255 encoding:NSUTF8StringEncoding];
+    printf("%s", output);
+    
+    if ([self.phoneNumbers count] > 0){
+        
+        printf("Phone numbers:\n");
+    
+	    for (NSDictionary* phoneDetails in self.phoneNumbers) {
+            
+            NSString *phoneLabel = [phoneDetails objectForKey:@"label"];
+            NSString *phoneNumber = [phoneDetails objectForKey:@"number"];
+            
+            [[NSString stringWithFormat:@"    %@:%@\n", phoneLabel, phoneNumber] getCString:output maxLength:255 encoding:NSUTF8StringEncoding];
+            printf("%s", output);
+    	}
+    }
+        
     NSLog(@"");
 }
 

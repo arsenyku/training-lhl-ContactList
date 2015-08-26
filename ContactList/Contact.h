@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *email;
+@property (nonatomic, strong) NSMutableArray *phoneNumbers;
 
 -(void) show;
 
