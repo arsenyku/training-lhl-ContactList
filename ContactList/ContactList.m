@@ -28,14 +28,14 @@
 
 -(void)listContacts{
     if ([self.contacts count] < 1){
-        printf("Your contacts list is currently empty.");
+        printf("Your contacts list is currently empty.\n");
         return;
     }
     
     for(int i = 0; i<[self.contacts count]; i++){
         Contact *contact = self.contacts[i];
         char output[255];
-        [[NSString stringWithFormat:@"%d: %@ (%@)", i, contact.name, contact.email]
+        [[NSString stringWithFormat:@"%d: %@ (%@)\n", i, contact.name, contact.email]
                getCString:output maxLength:sizeof(output) encoding:NSUTF8StringEncoding];
         printf("%s",output);
     }
@@ -131,7 +131,7 @@
     }
     
     
-    //NSLog(@"Loaded %lu contacts from storage.", (unsigned long)[self.contacts count]);
+	NSLog(@"Loaded %lu contacts from storage.", (unsigned long)[self.contacts count]);
 }
 
 

@@ -12,8 +12,13 @@
 
 @interface InputCollector : NSObject
 
+@property (nonatomic, strong) NSMutableArray* history;
+
 -(NSString *)inputForPrompt:(NSString *)promptString;
 
 -(Contact*) promptForNewContactForList:(ContactList *)list;
+
+-(void)addToHistory:(NSString*)command;
+-(NSArray*)retrieveLastCommands:(NSNumber*)numberOfCommands;
 
 @end

@@ -21,7 +21,7 @@ NSNumber* stringToNumber(NSString *inputString){
     
 }
 
-NSNumber* getIdFromInput(NSString* input){
+NSNumber* getNumericParameterFromInput(NSString* input){
     
     NSArray* components = [input componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     NSNumber *contactId = nil;
@@ -47,7 +47,8 @@ int main(int argc, const char * argv[]) {
 				        "list - List all contacts\n"
         				"show <id> - Show the details for contact <id>\n"
         				"find <partial name or email> - Show the details for all contacts that match\n"
-				        "reset - immediately deletes all contacts, including those previously stored\n"
+       	 				"reset - immediately deletes all contacts, including those previously stored\n"
+				        "history - show the last 3 commands entered by the user\n"
 				       	"quit - Exit Application\n"
                        	"> ";
         
@@ -60,6 +61,7 @@ int main(int argc, const char * argv[]) {
         NSString* const ListCommand = @"list";
         NSString* const ShowCommand = @"show";
         NSString* const FindCommand = @"find";
+        NSString* const HistoryCommand = @"history";
         NSString* const ResetCommand = @"reset";
         NSString* const QuitCommand = @"quit";
         
@@ -67,6 +69,8 @@ int main(int argc, const char * argv[]) {
 	        NSString* input = [inputCollector inputForPrompt:[NSString stringWithUTF8String:prompt]];
         
             input = [[input stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] lowercaseString];
+            
+            [inputCollector addToHistory:input];
             
             if ([input isEqualToString:@""]){
             
@@ -80,7 +84,7 @@ int main(int argc, const char * argv[]) {
                 [contacts listContacts];
                 
             } else if ([input hasPrefix:ShowCommand]) {
-                [contacts showContactWithId:getIdFromInput(input)];
+                [contacts showContactWithId:getNumericParameterFromInput(input)];
             
             } else if ([input hasPrefix:FindCommand]) {
 
@@ -92,6 +96,15 @@ int main(int argc, const char * argv[]) {
             } else if ([input hasPrefix:ResetCommand]) {
                 contacts = [[ContactList alloc] init];
                 [contacts saveToCache];
+                
+            } else if ([input hasPrefix:HistoryCommand]) {
+                NSArray *lastCommands = [inputCollector retrieveLastCommands:@3];
+                
+                for (NSString* command in lastCommands) {
+                    char output[255];
+                    [command getCString:output maxLength:sizeof(output) encoding:NSUTF8StringEncoding];
+                    printf("%s\n", output);
+                }
                 
             } else if ([input hasPrefix:QuitCommand]) {
                 NSLog(@"Exiting.");

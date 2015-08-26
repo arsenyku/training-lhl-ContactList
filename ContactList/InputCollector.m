@@ -11,6 +11,12 @@
 
 @implementation InputCollector
 
+-(instancetype)init{
+    self = [super init];
+    _history = [[NSMutableArray alloc] init];
+    return self;
+}
+
 // getInput
 // Issue a prompt to the user and return the typed input
 //
@@ -84,6 +90,33 @@
     return newContact;
 }
 
+
+-(void)addToHistory:(NSString*)command{
+    [self.history addObject:command];
+}
+
+-(NSArray*)retrieveLastCommands:(NSNumber*)numberOfCommands{
+    long n = [numberOfCommands intValue];
+    
+    // empty history, so return empty result
+	if ([self.history count] < 1){
+        return [[NSArray alloc] init];
+    }
+    
+    // retrieving more commands than there are commands
+    // so just return the commands that are there
+    if (n > [self.history count]){
+        n = [self.history count];
+    }
+
+    NSRange targetRange;
+    targetRange.length = n;
+    targetRange.location = [self.history count] - n;
+    
+    NSLog(@" ---- %lu  ---- %lu", (unsigned long)targetRange.length, (unsigned long)targetRange.location);
+    
+    return [self.history subarrayWithRange:targetRange];
+}
 
 
 @end
