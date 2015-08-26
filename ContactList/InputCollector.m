@@ -113,7 +113,6 @@
     targetRange.length = n;
     targetRange.location = [self.history count] - n;
     
-    NSLog(@" ---- %lu  ---- %lu", (unsigned long)targetRange.length, (unsigned long)targetRange.location);
     
     return [self.history subarrayWithRange:targetRange];
 }
